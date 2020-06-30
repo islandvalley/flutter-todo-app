@@ -26,41 +26,41 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var todos = [
+  var _todos = [
     {"name": "hello"},
   ];
 
-  var completedTodos = [];
+  var _completedTodos = [];
 
   void _addTodo(value) {
     setState(() {
-      todos.add({"name": value});
+      _todos.add({"name": value});
     });
   }
 
   void _removeTodo(index) {
     setState(() {
-      todos.removeAt(index);
+      _todos.removeAt(index);
     });
   }
 
   void _updateTodo(text, index) {
     setState(() {
-      todos[index]['name'] = text;
+      _todos[index]['name'] = text;
     });
   }
 
   void _completeTodo(index) {
     setState(() {
-      completedTodos.add(todos[index]);
-      todos.removeAt(index);
+      _completedTodos.add(_todos[index]);
+      _todos.removeAt(index);
     });
   }
 
   void _undoTodo(index) {
     setState(() {
-      todos.add(completedTodos[index]);
-      completedTodos.removeAt(index);
+      _todos.add(_completedTodos[index]);
+      _completedTodos.removeAt(index);
     });
   }
 
@@ -102,9 +102,9 @@ class _MyHomePageState extends State<MyHomePage> {
         home: DefaultTabController(
             length: 2,
             child: Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        centerTitle: true,
+              appBar: AppBar(
+                title: Text(widget.title),
+                centerTitle: true,
                 bottom: TabBar(
                   tabs: [
                     Tab(
@@ -117,49 +117,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ],
                 ),
-      ),
+              ),
               body: TabBarView(children: [
-                ListView.builder(
-        itemBuilder: (BuildContext context, int index) {
-          return Slidable(
-            actionPane: SlidableDrawerActionPane(),
-            actionExtentRatio: 0.25,
-            child: Container(
-              color: Colors.white,
-              child: ListTile(
-                title: Text(
-                  todos[index]['name'],
-                  style: TextStyle(fontSize: 22.0),
-                ),
-              ),
-            ),
-            actions: <Widget>[
-              IconSlideAction(
-                caption: 'Delete',
-                color: Colors.red,
-                icon: Icons.delete,
-                onTap: () => _removeTodo(index),
-              ),
-              IconSlideAction(
-                caption: 'Update',
-                color: Colors.green,
-                icon: Icons.update,
-                        onTap: () =>
-                            _askAdd('変更後のタスク名を入力', 'update', index: index),
-                      ),
-                    ],
-                    secondaryActions: <Widget>[
-                      IconSlideAction(
-                        caption: 'Done',
-                        color: Colors.blue,
-                        icon: Icons.thumb_up,
-                        onTap: () => _completeTodo(index),
-              ),
-            ],
-          );
-        },
-        itemCount: todos.length,
-      ),
                 ListView.builder(
                   itemBuilder: (BuildContext context, int index) {
                     return Slidable(
@@ -169,7 +128,48 @@ class _MyHomePageState extends State<MyHomePage> {
                         color: Colors.white,
                         child: ListTile(
                           title: Text(
-                            completedTodos[index]['name'],
+                            _todos[index]['name'],
+                            style: TextStyle(fontSize: 22.0),
+                          ),
+                        ),
+                      ),
+                      actions: <Widget>[
+                        IconSlideAction(
+                          caption: 'Delete',
+                          color: Colors.red,
+                          icon: Icons.delete,
+                          onTap: () => _removeTodo(index),
+                        ),
+                        IconSlideAction(
+                          caption: 'Update',
+                          color: Colors.green,
+                          icon: Icons.update,
+                          onTap: () =>
+                              _askAdd('変更後のタスク名を入力', 'update', index: index),
+                        ),
+                      ],
+                      secondaryActions: <Widget>[
+                        IconSlideAction(
+                          caption: 'Done',
+                          color: Colors.blue,
+                          icon: Icons.thumb_up,
+                          onTap: () => _completeTodo(index),
+                        ),
+                      ],
+                    );
+                  },
+                  itemCount: _todos.length,
+                ),
+                ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
+                    return Slidable(
+                      actionPane: SlidableDrawerActionPane(),
+                      actionExtentRatio: 0.25,
+                      child: Container(
+                        color: Colors.white,
+                        child: ListTile(
+                          title: Text(
+                            _completedTodos[index]['name'],
                             style: TextStyle(fontSize: 22.0),
                           ),
                         ),
@@ -184,14 +184,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       ],
                     );
                   },
-                  itemCount: completedTodos.length,
+                  itemCount: _completedTodos.length,
                 ),
               ]),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _askAdd('タスクを入力', 'add'),
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () => _askAdd('タスクを入力', 'add'),
+                tooltip: 'Increment',
+                child: Icon(Icons.add),
+              ),
             )));
   }
 }
