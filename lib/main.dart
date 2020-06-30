@@ -30,6 +30,8 @@ class _MyHomePageState extends State<MyHomePage> {
     {"name": "hello"},
   ];
 
+  var completedTodos = [];
+
   void _addTodo(value) {
     setState(() {
       todos.add({"name": value});
@@ -45,6 +47,13 @@ class _MyHomePageState extends State<MyHomePage> {
   void _updateTodo(text, index) {
     setState(() {
       todos[index]['name'] = text;
+    });
+  }
+
+  void _completeTodo(index) {
+    setState(() {
+      completedTodos.add(todos[index]);
+      todos.removeAt(index);
     });
   }
 
@@ -82,10 +91,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+        home: DefaultTabController(
+            length: 2,
+            child: Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
         centerTitle: true,
+                bottom: TabBar(
+                  tabs: [
+                    Tab(
+                      icon: Icon(Icons.work),
+                      text: 'TODO',
+                    ),
+                    Tab(
+                      icon: Icon(Icons.thumb_up),
+                      text: 'DONE',
+                    ),
+                  ],
+                ),
       ),
       body: ListView.builder(
         itemBuilder: (BuildContext context, int index) {
@@ -112,7 +136,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 caption: 'Update',
                 color: Colors.green,
                 icon: Icons.update,
-                onTap: () => _askAdd('変更後のタスク名を入力', 'update', index: index),
+                        onTap: () =>
+                            _askAdd('変更後のタスク名を入力', 'update', index: index),
+                      ),
+                    ],
+                    secondaryActions: <Widget>[
+                      IconSlideAction(
+                        caption: 'Done',
+                        color: Colors.blue,
+                        icon: Icons.thumb_up,
+                        onTap: () => _completeTodo(index),
               ),
             ],
           );
@@ -124,6 +157,6 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ),
-    );
+            )));
   }
 }
