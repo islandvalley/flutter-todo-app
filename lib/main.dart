@@ -57,6 +57,13 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _undoTodo(index) {
+    setState(() {
+      todos.add(completedTodos[index]);
+      completedTodos.removeAt(index);
+    });
+  }
+
   void _askAdd(String titleText, String type, {index}) {
     final TextEditingController todoTextController = TextEditingController();
 
@@ -111,7 +118,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 ),
       ),
-      body: ListView.builder(
+              body: TabBarView(children: [
+                ListView.builder(
         itemBuilder: (BuildContext context, int index) {
           return Slidable(
             actionPane: SlidableDrawerActionPane(),
@@ -152,6 +160,33 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         itemCount: todos.length,
       ),
+                ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
+                    return Slidable(
+                      actionPane: SlidableDrawerActionPane(),
+                      actionExtentRatio: 0.25,
+                      child: Container(
+                        color: Colors.white,
+                        child: ListTile(
+                          title: Text(
+                            completedTodos[index]['name'],
+                            style: TextStyle(fontSize: 22.0),
+                          ),
+                        ),
+                      ),
+                      secondaryActions: <Widget>[
+                        IconSlideAction(
+                          caption: 'Undo',
+                          color: Colors.purple,
+                          icon: Icons.backspace,
+                          onTap: () => _undoTodo(index),
+                        ),
+                      ],
+                    );
+                  },
+                  itemCount: completedTodos.length,
+                ),
+              ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _askAdd('タスクを入力', 'add'),
         tooltip: 'Increment',
